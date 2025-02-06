@@ -1,0 +1,32 @@
+{% extends 'cart-temp/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="h1 text-center">Items Cart</h1>
+    {% if cart_items %}
+        <ul class="list-group">
+            {% for item in cart_items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="fw-bold">{{ item.product.name }}</span> - $ {{ item.product.price }} x
+                    </div>
+                    <form method="POST" action="{% url 'cart:update_item' item.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" class="form-control d-inline w-25" value="{{ item.quantity }}" min="1" />
+                        <button type="submit" class="btn btn-sm btn-primary">Atualizar</button>
+                    </form>
+                    <div>
+                        - R$ {{ item.total_price }} 
+                        <a href="{% url 'cart:remove_from_cart' item.id %}" class="btn btn-sm btn-danger">Remove</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+        <h3 class="h3 text-center mt-4">Total: $ {{ total }}</h3>
+    {% else %}
+        <h1 class="h1 text-center text-muted">Your cart is empty</h1>
+    {% endif %}
+</div>
+
+{% endblock %}

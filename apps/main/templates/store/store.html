@@ -1,0 +1,67 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section id="shop-hero">
+    <h1>#stayhome</h1>
+    <br>
+    <h4>Save more money with coupouns & up to 70% off!</h4>
+</section>
+
+   
+    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin: 100px 0 40px 0;">
+        <h1 class="h1">SNEAKERS</h1>
+        <h3 class="h3">Last Released</h3>
+    </div>
+    
+
+<section id="cardsContainer">
+    
+    {% for product in products %}
+        <div class="col-md-4">
+            <div class="card mb-4" style="display: flex; flex-direction: column;">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <div class="card-body" style="flex-grow: 1; text-align: left;">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                    <div class="stars">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: row; justify-content: space-between;">
+                    <p class="card-text" style="text-align: left; margin-left: 15px; margin-bottom: 22px;"><strong>Price:</strong> ${{ product.price }}</p>
+                    <i class="fa-solid fa-cart-shopping" style="
+                        cursor: pointer;
+                        height: 40px;
+                        width: 40px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        color: #591420;
+                        background-color: #e8fae8;
+                        border: 1px solid #e8fae8;
+                        position: absolute;
+                        bottom: 33px;
+                        right: 35px;
+                    "></i>
+                </div>
+            </div>
+        </div>
+
+    {% empty %}
+        <p>No products available.</p>
+    {% endfor %}
+</section>
+    
+{% endblock %}
+
+
+
+    
+    

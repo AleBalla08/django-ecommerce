@@ -1,0 +1,30 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+    <section id="loginFormId">
+        <h1 class="h1">Login</h1>
+        <br>
+        <form action="{% url 'login' %}" method="POST" style="text-align: start;">
+            {% csrf_token %}
+            <div class="login-form__rows">
+                {% for field in form %}
+                    <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
+                        <label style="margin-bottom: 5px;" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{field}}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-12 text-center">
+                <button class="btn btn-success col-12" style="padding-top: 5px; background-color: #591420 !important; border-color: #591420 !important;" type="submit">Login</button>
+            </div>
+            
+        </form>
+        <br>
+        <br>
+        <div class="or__container">
+            <h3 class="h3">Don't have an account?</h3><a href="{% url 'register' %}"><h4 class="h4">Register Now</h4></a>
+            
+        </div>
+    </section>
+{% endblock %}
