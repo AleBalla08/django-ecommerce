@@ -6,14 +6,23 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from .models import Product
 
+def custom_login_required(view_func):
+    def wrapper(request, *arg, **kwargs):
+        if not request.user.is_authenticated:
+            messages.warning(request, 'You need to be loged to proceed')
+            return redirect('login')
+        return view_func(request, *arg, **kwargs)
+    return wrapper
+
+
+    
+
 def store(request):
     context = {'products': Product.objects.all()}
     return render(request, 'store/store.html', context)
 
 
-def checkout(request):
-    context = {}
-    return render(request, 'store/checkout.html', context)
+
 
 
 
@@ -72,11 +81,11 @@ def register(request):
         name = self.cleaned_data.get("register_name")
 
         if name:
-            name = name.strip()
             if " " not in name:
                 return name
             else:
-                raise forms.ValidationError('Not possible to put spaces in this field')
+                messages.error(request, "You can't put blank spaces in the name field")
+                return redirect('register')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
