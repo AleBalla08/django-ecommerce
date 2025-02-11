@@ -2,6 +2,16 @@
 {% load static %}
 
 {% block content %}
+    <style>
+        
+        .toggle-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+
+    </style>
+
 
     <section id="Checkout-page">
         <div class="container mt-5">
@@ -24,9 +34,138 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-        <h3 class="h3 text-center mt-4">Total: $ {{ total }}</h3>
-        <br>
+            <h3 class="h3 text-center mt-4">Total: $ {{ total }}</h3>
+            <br>
+            <ul class="list-group">
+                <li class="list-group-item d-flex flex-column align-items-center">
+                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                        <h4 class="h4 mt-1">Address:</h4>  
+                        <i id="showAdress" class="fa-solid fa-caret-down mt-2" onclick="toggleAddress()" style="cursor: pointer;"></i> 
+                    </div>
+            
+                    <div id="address-content" class="toggle-content">
+                        <form action="{% url 'cart:checkout' %}">
+                            {% csrf_token %}
+                            <div class="checkout__address">
+                                {% for field in form %}
+                                    <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
+                                        <label style="margin-bottom: 5px;" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                        {{field}}
+                                    </div>
+                                {% endfor %}
+                                <div class="col-12 text-center">
+                                    <button class="btn btn-success col-12" style="padding-top: 5px; background-color: #591420 !important; border-color: #591420 !important;" type="submit">Save</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+
+                <li class="list-group-item d-flex flex-column align-items-center">
+                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                        <h4 class="h4 mt-1">Delivery Method:</h4>  
+                        <i id="showDelivery" class="fa-solid fa-caret-down mt-2" onclick="toggleDelivery()" style="cursor: pointer;"></i> 
+                    </div>
+                    <div id="deliveryDiv" class="toggle-content">
+                        <h1>dsaioufvasuyijsa</h1>    
+                    </div>
+                </li>
+
+                <li class="list-group-item d-flex flex-column align-items-center">
+                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                        <h4 class="h4 mt-1" >Payment Method:</h4>  
+                        <i id="showPayment" class="fa-solid fa-caret-down mt-2" onclick="togglePayment()" style="cursor: pointer;"></i> 
+                    </div>
+                    <div id="paymentDiv" class="toggle-content"> 
+                        <h1>dsjikdgiuasdojdpisaui</h1>
+                    </div>
+                </li>
+
+            
+            </ul>
         </div>
     </section>
+
+{% endblock %}
+
+{% block js %}
+    <script src="https://kit.fontawesome.com/626eec2485.js" crossorigin="anonymous"></script>
+    <script>
+        
+        function closeAll(exceptId) {
+            const sections = [
+                { div: "address-content", icon: "showAdress" },
+                { div: "deliveryDiv", icon: "showDelivery" },
+                { div: "paymentDiv", icon: "showPayment" }
+            ];
+
+            sections.forEach(section => {
+                const div = document.getElementById(section.div);
+                const icon = document.getElementById(section.icon);
+
+                if (div.id !== exceptId) {
+                    div.style.maxHeight = null;
+                    icon.classList.remove("fa-caret-up");
+                    icon.classList.add("fa-caret-down");
+                }
+                
+            });
+        
+        
+        }
+        
+
+        function toggleAddress() {
+            const addressDiv = document.getElementById("address-content");
+            const showAdress = document.getElementById('showAdress');
+
+            if (addressDiv.style.maxHeight) {
+                addressDiv.style.maxHeight = null; 
+                showAdress.classList.remove("fa-caret-up");
+                showAdress.classList.add("fa-caret-down");
+            } else {
+                closeAll("address-content")
+                addressDiv.style.maxHeight = addressDiv.scrollHeight + "px";
+                showAdress.classList.remove("fa-caret-down");
+                showAdress.classList.add("fa-caret-up");
+            }
+        }
+
+        function toggleDelivery(){
+            const deliveryDiv = document.getElementById('deliveryDiv');
+            const showDelivery = document.getElementById('showDelivery');
+
+            if (deliveryDiv.style.maxHeight) {
+                deliveryDiv.style.maxHeight = null;
+                showDelivery.classList.remove('fa-caret-up');
+                showDelivery.classList.add('fa-caret-down');
+            } else {
+                closeAll('deliveryDiv')
+                deliveryDiv.style.maxHeight = deliveryDiv.scrollHeight + 'px';
+                showDelivery.classList.remove('fa-caret-down');
+                showDelivery.classList.add('fa-caret-up');
+            }
+        }
+
+        function togglePayment(){
+            const paymentDiv = document.getElementById('paymentDiv');
+            const showPayment = document.getElementById('showPayment');
+
+            if (paymentDiv.style.maxHeight) {
+                paymentDiv.style.maxHeight = null;
+                showPayment.classList.remove('fa-caret-up');
+                showPayment.classList.add('fa-caret-down');
+            } else {
+                closeAll('paymentDiv')
+                paymentDiv.style.maxHeight = paymentDiv.scrollHeight + 'px';
+                showPayment.classList.remove('fa-caret-down');
+                showPayment.classList.add('fa-caret-up');
+            }
+        }
+
+
+
+    </script>
+
 
 {% endblock %}

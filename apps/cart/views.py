@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib import auth
 from django.contrib.auth.models import User
+
+from apps.cart.forms import AddressForm
 from .models import *
 from apps.main.models import Product
 from django.contrib.auth.decorators import login_required  # Para views baseadas em função (FBV)
@@ -47,15 +49,31 @@ def update_item(request, item_id):
 
 
 def checkout(request):
-    context = {}
-
     cart_items = CartItem.objects.filter(user=request.user)
+
     total_price = sum(item.product.price * item.quantity for item in cart_items)
-    
+    form = AddressForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        address = form.save(commit=False)
+        address.user = request.user
+        address.save()
+
+
+        order = order.objects.create(user=request.user, address=address, total=total_price)
+
+        for item in cart_items:
+            order.items.add(item)
+        
+        cart_items.delete()
+        
+        messages.success(request, "Pedido realizado com sucesso!")
+        return redirect("order_success")
 
     context = {
-        'cart_items': cart_items,
-        'total': total_price,
-       
+        "cart_items": cart_items,
+        "total": total_price,
+        "form": form,
     }
-    return render(request, 'cart-temp/checkout.html', context)
+
+    return render(request, "cart-temp/checkout.html", context)
