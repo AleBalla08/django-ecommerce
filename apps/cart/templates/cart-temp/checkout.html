@@ -44,7 +44,7 @@
                     </div>
             
                     <div id="address-content" class="toggle-content">
-                        <form action="{% url 'cart:checkout' %}">
+                        <form action="{% url 'cart:address-view' %}" method="POST">
                             {% csrf_token %}
                             <div class="checkout__address">
                                 {% for field in form %}

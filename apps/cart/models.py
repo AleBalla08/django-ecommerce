@@ -2,6 +2,7 @@ from django.db import models
 from apps.main.models import Product
 from django.contrib.auth.models import User
 
+
 class CartItem(models.Model):
     user = models.ForeignKey(
         to=User,
@@ -35,5 +36,26 @@ class UserAdress(models.Model):
 
     def __str__(self):
         return f'{self.address}'
+
+
+
+
+class Order(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=False,
+        related_name="orders" 
+    ) 
+    cart_items = models.ManyToManyField(CartItem)  
+    address = models.ForeignKey(UserAdress, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(auto_now_add=True) 
+
+    def __str__(self):
+        return f"Pedido {self.id} de {self.user.username}"
+
+
+
 
 
