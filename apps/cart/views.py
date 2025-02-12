@@ -76,7 +76,7 @@ def checkout(request):
 
     if not cart_items.exists():
         messages.warning(request, "Your cart is empty.")
-        return redirect("cart_view")
+        return redirect("cart:cart_view")
 
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     form = AddressForm(request.POST or None)
@@ -88,11 +88,12 @@ def checkout(request):
 
         order = Order.objects.create(user=request.user, address=address)
         order.cart_items.set(cart_items)
+        order.total_price.set(total_price)
 
         cart_items.delete()
 
         messages.success(request, "Order successfull!")
-        return redirect("order_success")
+        return redirect("cart:checkout")
 
     context = {
         "cart_items": cart_items,

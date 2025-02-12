@@ -4,7 +4,7 @@ from .models import *
 class AddressForm(forms.ModelForm):
 
     class Meta:
-        model = UserAdress
+        model = UserAddress
         exclude = ['user']
         labels = {
             'address':'Address',

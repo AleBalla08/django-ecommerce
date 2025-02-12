@@ -20,7 +20,7 @@ class CartItem(models.Model):
     def __str__(self):
         return f'{self.quantity} x {self.product.name}'
 
-class UserAdress(models.Model):
+class UserAddress(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.SET_NULL,
@@ -37,9 +37,6 @@ class UserAdress(models.Model):
     def __str__(self):
         return f'{self.address}'
 
-
-
-
 class Order(models.Model):
     user = models.ForeignKey(
         User,
@@ -48,8 +45,9 @@ class Order(models.Model):
         blank=False,
         related_name="orders" 
     ) 
-    cart_items = models.ManyToManyField(CartItem)  
-    address = models.ForeignKey(UserAdress, on_delete=models.DO_NOTHING)
+    cart_items = models.ManyToManyField(CartItem)
+    total_price = models.DecimalField(max_digits=10, decimal_places=3, blank=False, null=False, default=None)
+    address = models.ForeignKey(UserAddress, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True) 
 
     def __str__(self):

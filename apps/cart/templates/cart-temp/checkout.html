@@ -10,6 +10,18 @@
             transition: max-height 0.4s ease-out;
         }
 
+        .checkbox-redondo{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            appearance: none; 
+            border: 2px solid #333; 
+            outline: none;
+            cursor: pointer;
+            background-color: white;
+                            
+        }
+
     </style>
 
 
@@ -36,53 +48,81 @@
             {% endif %}
             <h3 class="h3 text-center mt-4">Total: $ {{ total }}</h3>
             <br>
-            <ul class="list-group">
-                <li class="list-group-item d-flex flex-column align-items-center">
-                    <div style="display: flex; justify-content: space-between; width: 100%;">
-                        <h4 class="h4 mt-1">Address:</h4>  
-                        <i id="showAdress" class="fa-solid fa-caret-down mt-2" onclick="toggleAddress()" style="cursor: pointer;"></i> 
-                    </div>
-            
-                    <div id="address-content" class="toggle-content">
-                        <form action="{% url 'cart:address-view' %}" method="POST">
-                            {% csrf_token %}
+            <form action="{% url 'cart:checkout' %}" method="POST">
+                {% csrf_token %}
+                <ul class="list-group">
+                    <li class="list-group-item d-flex flex-column align-items-center">
+                        <div style="display: flex; justify-content: space-between; width: 100%;">
+                            <h4 class="h4 mt-1">Address:</h4>  
+                            <i id="showAdress" class="fa-solid fa-caret-down mt-2" onclick="toggleAddress()" style="cursor: pointer;"></i> 
+                        </div>
+                        <div id="address-content" class="toggle-content">
                             <div class="checkout__address">
                                 {% for field in form %}
                                     <div class="col-12 col-lg-12" style="margin-bottom: 10px;">
                                         <label style="margin-bottom: 5px;" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                        {{field}}
+                                        {{ field }}
                                     </div>
                                 {% endfor %}
-                                <div class="col-12 text-center">
-                                    <button class="btn btn-success col-12" style="padding-top: 5px; background-color: #591420 !important; border-color: #591420 !important;" type="submit">Save</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </li>
-
-                <li class="list-group-item d-flex flex-column align-items-center">
-                    <div style="display: flex; justify-content: space-between; width: 100%;">
-                        <h4 class="h4 mt-1">Delivery Method:</h4>  
-                        <i id="showDelivery" class="fa-solid fa-caret-down mt-2" onclick="toggleDelivery()" style="cursor: pointer;"></i> 
-                    </div>
-                    <div id="deliveryDiv" class="toggle-content">
-                        <h1>dsaioufvasuyijsa</h1>    
-                    </div>
-                </li>
-
-                <li class="list-group-item d-flex flex-column align-items-center">
-                    <div style="display: flex; justify-content: space-between; width: 100%;">
-                        <h4 class="h4 mt-1" >Payment Method:</h4>  
-                        <i id="showPayment" class="fa-solid fa-caret-down mt-2" onclick="togglePayment()" style="cursor: pointer;"></i> 
-                    </div>
-                    <div id="paymentDiv" class="toggle-content"> 
-                        <h1>dsjikdgiuasdojdpisaui</h1>
-                    </div>
-                </li>
-
+                            </div>   
+                        </div>
+                    </li>
             
-            </ul>
+                    <li class="list-group-item d-flex flex-column align-items-center">
+                        <div style="display: flex; justify-content: space-between; width: 100%;">
+                            <h4 class="h4 mt-1">Delivery Method:</h4>  
+                            <i id="showDelivery" class="fa-solid fa-caret-down mt-2" onclick="toggleDelivery()" style="cursor: pointer;"></i> 
+                        </div>
+                        <div id="deliveryDiv" class="toggle-content">
+                            <br>
+                            <div class="d-flex flex-column">
+                                <div style="display: flex; gap: 300px; width: 100%; border: 1px solid; padding: 1em; text-align: center; align-items: center;">
+                                    <h4 class="h4">
+                                        Fedex (12-13 days)
+                                    </h4>
+                                    <h5 class="h5">$11,00</h5>
+                                    <input type="checkbox" class="checkbox-redondo">
+                                </div>
+                                <br>
+                                <div style="display: flex; gap: 300px; width: 100%; border: 1px solid; padding: 1em; text-align: center; align-items: center;">
+                                    <h4 class="h4">
+                                        Fedex (12-13 days)
+                                    </h4>
+                                    <h5 class="h5">$11,00</h5>
+                                    <input type="checkbox" class="checkbox-redondo">
+                                </div>
+                                <br>
+                                <div style="display: flex; gap: 300px; width: 100%; border: 1px solid; padding: 1em; text-align: center; align-items: center;">
+                                    <h4 class="h4">
+                                        Fedex (12-13 days)
+                                    </h4>
+                                    <h5 class="h5">$11,00</h5>
+                                    <input type="checkbox" class="checkbox-redondo">
+                                <br>
+                            </div>   
+                        </div>
+                    </li>
+            
+                    <li class="list-group-item d-flex flex-column align-items-center">
+                        <div style="display: flex; justify-content: space-between; width: 100%;">
+                            <h4 class="h4 mt-1" >Payment Method:</h4>  
+                            <i id="showPayment" class="fa-solid fa-caret-down mt-2" onclick="togglePayment()" style="cursor: pointer;"></i> 
+                        </div>
+                        <div id="paymentDiv" class="toggle-content"> 
+                            <h1>Conteúdo do pagamento</h1>
+                        </div>
+                    </li>
+                    
+                    <br>
+                    <div class="col-12 text-center">
+                        <button class="btn btn-success col-12" 
+                                style="padding-top: 5px; background-color: #591420 !important; border-color: #591420 !important;" 
+                                type="submit">
+                            Order
+                        </button>
+                    </div>
+                </ul>
+            </form>            
         </div>
     </section>
 
