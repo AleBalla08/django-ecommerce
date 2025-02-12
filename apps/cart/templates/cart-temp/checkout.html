@@ -10,16 +10,27 @@
             transition: max-height 0.4s ease-out;
         }
 
-        .checkbox-redondo{
+        #delivery-method{
+            width: 1000px;
+            height: 70px;
+            padding: 1em;
+        }
+
+        .checkbox-redondo {
             width: 20px;
             height: 20px;
             border-radius: 50%;
             appearance: none; 
-            border: 2px solid #333; 
-            outline: none;
+            border: 2px solid #591420;
             cursor: pointer;
             background-color: white;
-                            
+            transition: 0.3s;
+        }
+
+        
+        .checkbox-redondo:checked {
+            background-color: #591420;
+            border-color: #591420;
         }
 
     </style>
@@ -76,29 +87,13 @@
                         <div id="deliveryDiv" class="toggle-content">
                             <br>
                             <div class="d-flex flex-column">
-                                <div style="display: flex; gap: 300px; width: 100%; border: 1px solid; padding: 1em; text-align: center; align-items: center;">
-                                    <h4 class="h4">
-                                        Fedex (12-13 days)
-                                    </h4>
-                                    <h5 class="h5">$11,00</h5>
-                                    <input type="checkbox" class="checkbox-redondo">
-                                </div>
-                                <br>
-                                <div style="display: flex; gap: 300px; width: 100%; border: 1px solid; padding: 1em; text-align: center; align-items: center;">
-                                    <h4 class="h4">
-                                        Fedex (12-13 days)
-                                    </h4>
-                                    <h5 class="h5">$11,00</h5>
-                                    <input type="checkbox" class="checkbox-redondo">
-                                </div>
-                                <br>
-                                <div style="display: flex; gap: 300px; width: 100%; border: 1px solid; padding: 1em; text-align: center; align-items: center;">
-                                    <h4 class="h4">
-                                        Fedex (12-13 days)
-                                    </h4>
-                                    <h5 class="h5">$11,00</h5>
-                                    <input type="checkbox" class="checkbox-redondo">
-                                <br>
+                                <select name="delivery-method" id="delivery-method">
+                                    <option value="" selected>Select your method</option>
+                                    <option value="">Normal(11-16 days) ----- $6.00</option>
+                                    <option value="">Fast(8-11 days) --------- $11.00</option>
+                                    <option value="">Ultra(2-3 days) -------- $18.00</option>
+                                </select>
+
                             </div>   
                         </div>
                     </li>
@@ -109,7 +104,19 @@
                             <i id="showPayment" class="fa-solid fa-caret-down mt-2" onclick="togglePayment()" style="cursor: pointer;"></i> 
                         </div>
                         <div id="paymentDiv" class="toggle-content"> 
-                            <h1>Conteúdo do pagamento</h1>
+                            <br>
+                            <div class="d-flex flex-row" style="width: 1000px; justify-content: space-between; border: 1px solid; padding: 1em; align-items: center; text-align: center;">
+                                <h3 class="h3">Credit Card</h3>
+                                <img src="{% static '/assets/img/pay.png' %}" alt="num carego">
+                                <input type="checkbox" class="checkbox-redondo" value="creditCard">
+                            </div>
+                            <br>
+                            <div class="d-flex flex-row" style="width: 1000px; justify-content: space-between; border: 1px solid; padding: 1em; align-items: center; text-align: center;">
+                                <h3 class="h3">PayPal</h3>
+                                <img src="" alt="">
+                                <input type="checkbox" class="checkbox-redondo" value="PayPal">
+                            </div>
+                            <br>
                         </div>
                     </li>
                     
