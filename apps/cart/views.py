@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib import auth
@@ -24,10 +25,6 @@ def custom_login_required(view_func):
 def cartView(request):
     """Apenas exibe os itens no carrinho, sem criar pedidos"""
     cart_items = CartItem.objects.filter(user=request.user)
-
-    if not cart_items.exists():
-        messages.warning(request, "Your cart is empty.")
-        return redirect('cart_view')
 
     total = sum(item.total_price() or 0 for item in cart_items)
 
@@ -74,11 +71,8 @@ def checkout(request):
     """Cria um pedido apenas quando o usuário finaliza a compra"""
     cart_items = CartItem.objects.filter(user=request.user)
 
-    if not cart_items.exists():
-        messages.warning(request, "Your cart is empty.")
-        return redirect("cart:cart_view")
-
     total_price = sum(item.product.price * item.quantity for item in cart_items)
+    
     form = AddressForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -86,14 +80,29 @@ def checkout(request):
         address.user = request.user
         address.save()
 
-        order = Order.objects.create(user=request.user, address=address)
-        order.cart_items.set(cart_items)
-        order.total_price.set(total_price)
+        delivery_method=request.POST.get("selected_delivery")
+        payment_method=request.POST.get("selected_payment")
 
-        cart_items.delete()
+        if delivery_method == 'Normal':
+            total_price += Decimal('6.00')
+        elif delivery_method == 'Fast':
+            total_price += Decimal('11.00')
+        elif delivery_method == 'Ultra':
+            total_price += Decimal('18.00')
 
-        messages.success(request, "Order successfull!")
-        return redirect("cart:checkout")
+        order = Order.objects.create(
+            user=request.user,
+            address=address,
+            total_price=total_price,  
+            delivery_method=delivery_method,
+            payment_method=payment_method  
+        )
+
+        order.cart_items.set(cart_items)  
+        cart_items.delete()  
+
+        messages.success(request, "Order successful!")
+        return redirect("store")
 
     context = {
         "cart_items": cart_items,
@@ -102,5 +111,7 @@ def checkout(request):
     }
 
     return render(request, "cart-temp/checkout.html", context)
+
+
 
 

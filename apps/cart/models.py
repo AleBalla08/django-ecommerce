@@ -39,19 +39,22 @@ class UserAddress(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(
-        User,
+        to=User,
         on_delete=models.SET_NULL,
         null=True,
         blank=False,
-        related_name="orders" 
-    ) 
+        related_name="order"
+    )
     cart_items = models.ManyToManyField(CartItem)
-    total_price = models.DecimalField(max_digits=10, decimal_places=3, blank=False, null=False, default=None)
+    total_price = models.DecimalField(max_digits=10, decimal_places=3, blank=False, null=True)
     address = models.ForeignKey(UserAddress, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True) 
+    delivery_method = models.CharField(max_length=50, null=False, blank=False, default='Normal')  
+    payment_method = models.CharField(max_length=50, null=False, blank=False, default='Credit Card')  
 
     def __str__(self):
         return f"Pedido {self.id} de {self.user.username}"
+
 
 
 

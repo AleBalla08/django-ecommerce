@@ -38,6 +38,8 @@
 
     <section id="Checkout-page">
         <div class="container mt-5">
+            <form action="{% url 'cart:checkout' %}" method="POST">
+                {% csrf_token %}
             <h1 class="h1 text-center">It's almost finished...</h1>
             {% if cart_items %}
                 <ul class="list-group">
@@ -59,9 +61,10 @@
             {% endif %}
             <h3 class="h3 text-center mt-4">Total: $ {{ total }}</h3>
             <br>
-            <form action="{% url 'cart:checkout' %}" method="POST">
-                {% csrf_token %}
+            
                 <ul class="list-group">
+                    
+                    
                     <li class="list-group-item d-flex flex-column align-items-center">
                         <div style="display: flex; justify-content: space-between; width: 100%;">
                             <h4 class="h4 mt-1">Address:</h4>  
@@ -79,6 +82,7 @@
                         </div>
                     </li>
             
+                    
                     <li class="list-group-item d-flex flex-column align-items-center">
                         <div style="display: flex; justify-content: space-between; width: 100%;">
                             <h4 class="h4 mt-1">Delivery Method:</h4>  
@@ -87,39 +91,41 @@
                         <div id="deliveryDiv" class="toggle-content">
                             <br>
                             <div class="d-flex flex-column">
-                                <select name="delivery-method" id="delivery-method">
+                                <select name="selected_delivery" id="delivery-method" required>
                                     <option value="" selected>Select your method</option>
-                                    <option value="">Normal(11-16 days) ----- $6.00</option>
-                                    <option value="">Fast(8-11 days) --------- $11.00</option>
-                                    <option value="">Ultra(2-3 days) -------- $18.00</option>
+                                    <option value="Normal">Normal (11-16 days) - $6.00</option>
+                                    <option value="Fast">Fast (8-11 days) - $11.00</option>
+                                    <option value="Ultra">Ultra (2-3 days) - $18.00</option>
                                 </select>
-
                             </div>   
                         </div>
                     </li>
             
+                   
                     <li class="list-group-item d-flex flex-column align-items-center">
                         <div style="display: flex; justify-content: space-between; width: 100%;">
-                            <h4 class="h4 mt-1" >Payment Method:</h4>  
+                            <h4 class="h4 mt-1">Payment Method:</h4>  
                             <i id="showPayment" class="fa-solid fa-caret-down mt-2" onclick="togglePayment()" style="cursor: pointer;"></i> 
                         </div>
                         <div id="paymentDiv" class="toggle-content"> 
                             <br>
-                            <div class="d-flex flex-row" style="width: 1000px; justify-content: space-between; border: 1px solid; padding: 1em; align-items: center; text-align: center;">
-                                <h3 class="h3">Credit Card</h3>
-                                <img src="{% static '/assets/img/pay.png' %}" alt="num carego">
-                                <input type="checkbox" class="checkbox-redondo" value="creditCard">
+                            <div class="d-flex flex-row align-items-center" style="gap: 70px; padding: 1em; border: 1px solid;">
+                                <label>
+                                    <input type="radio" name="selected_payment" value="creditCard" required> Credit Card
+                                </label>
+                                <img src="{% static 'assets/img/pay.png' %}" alt="Credit Card">
                             </div>
                             <br>
-                            <div class="d-flex flex-row" style="width: 1000px; justify-content: space-between; border: 1px solid; padding: 1em; align-items: center; text-align: center;">
-                                <h3 class="h3">PayPal</h3>
-                                <img src="" alt="">
-                                <input type="checkbox" class="checkbox-redondo" value="PayPal">
+                            <div class="d-flex flex-row align-items-center" style="gap: 200px; padding: 1em; border: 1px solid;">
+                                <label>
+                                    <input type="radio" name="selected_payment" value="PayPal" required> PayPal
+                                </label>
+                                <i class="fa-brands fa-paypal fa-3x"></i>
                             </div>
                             <br>
                         </div>
                     </li>
-                    
+            
                     <br>
                     <div class="col-12 text-center">
                         <button class="btn btn-success col-12" 
@@ -129,7 +135,7 @@
                         </button>
                     </div>
                 </ul>
-            </form>            
+            </form>           
         </div>
     </section>
 
@@ -138,6 +144,25 @@
 {% block js %}
     <script src="https://kit.fontawesome.com/626eec2485.js" crossorigin="anonymous"></script>
     <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+
+            form.addEventListener("submit", function (event) {
+                const deliveryMethod = document.querySelector("#delivery-method").value;
+                const paymentMethod = document.querySelector("input[name='selected_payment']:checked");
+
+                if (!deliveryMethod) {
+                    alert("Please select a delivery method.");
+                    event.preventDefault();
+                }
+
+                if (!paymentMethod) {
+                    alert("Please select a payment method.");
+                    event.preventDefault();
+                }
+            });
+        });
         
         function closeAll(exceptId) {
             const sections = [
