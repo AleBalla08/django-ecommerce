@@ -70,6 +70,7 @@ def update_item(request, item_id):
 def checkout(request):
     """Cria um pedido apenas quando o usuário finaliza a compra"""
     cart_items = CartItem.objects.filter(user=request.user)
+    print(cart_items)
 
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     
@@ -77,8 +78,27 @@ def checkout(request):
 
     if request.method == "POST" and form.is_valid():
         address = form.save(commit=False)
-        address.user = request.user
-        address.save()
+        addressExists = UserAddress.objects.filter(
+            user = request.user,
+            address = address.address,
+            neighborhood = address.neighnorhood,
+            city = address.city,
+            state = address.state,
+            country = address.country
+        ).exists()
+
+        if not addressExists:
+            address.user = request.user
+            address.save()
+        else:
+            address = UserAddress.objects.filter(
+                user = request.user,
+                address = address.address,
+                neighborhood = address.neighnorhood,
+                city = address.city,
+                state = address.state,
+                country = address.country
+            )
 
         delivery_method=request.POST.get("selected_delivery")
         payment_method=request.POST.get("selected_payment")
@@ -89,16 +109,24 @@ def checkout(request):
             total_price += Decimal('11.00')
         elif delivery_method == 'Ultra':
             total_price += Decimal('18.00')
-
+            
         order = Order.objects.create(
             user=request.user,
             address=address,
-            total_price=total_price,  
-            delivery_method=delivery_method,
-            payment_method=payment_method  
+            total_price=total_price,
+            payment_method=payment_method,
+            delivery_method=delivery_method
         )
 
-        order.cart_items.set(cart_items)  
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                product=item.product,
+                quantity=item.quantity,
+                price=item.product.price,
+
+            )
+
         cart_items.delete()  
 
         messages.success(request, "Order successful!")

@@ -10,7 +10,7 @@ from apps.main.models import Product
 from django.contrib.auth.models import User
 
 
-user = User.objects.create_user(username='UsuarioQuePopula', password='12345')
+user = User.objects.create_user(username='UsuarioQuePopula2', password='12345')
 
 image_paths = [
     'static/assets/img/fotos/tenis1.jpg',

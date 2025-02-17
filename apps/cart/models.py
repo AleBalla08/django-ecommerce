@@ -50,12 +50,21 @@ class Order(models.Model):
     address = models.ForeignKey(UserAddress, on_delete=models.DO_NOTHING)
     created_at = models.DateTimeField(auto_now_add=True) 
     delivery_method = models.CharField(max_length=50, null=False, blank=False, default='Normal')  
-    payment_method = models.CharField(max_length=50, null=False, blank=False, default='Credit Card')  
+    payment_method = models.CharField(max_length=50, null=False, blank=False, default='Credit Card') 
 
     def __str__(self):
         return f"Pedido {self.id} de {self.user.username}"
 
 
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=3)
+    
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} (Pedido {self.order.id})"
 
 
 
