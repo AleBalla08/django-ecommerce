@@ -20,3 +20,9 @@ class Product(models.Model):
     def __str__(self):
         return f'Product [name = {self.name}]'
     
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_photo = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username

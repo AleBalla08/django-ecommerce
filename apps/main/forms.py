@@ -67,6 +67,8 @@ class RegisterForm(forms.Form):
         }
     ))
 
+    profile_photo = forms.ImageField(required=False)
+
     def clean_register_name(self):
         name = self.cleaned_data.get("register_name")
 

@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from .forms import *
 from django.contrib import auth
 from django.contrib.auth.models import User
-from .models import Product
+from .models import Product, Profile
 
 def custom_login_required(view_func):
     def wrapper(request, *arg, **kwargs):
@@ -97,6 +97,7 @@ def register(request):
             name = form['register_name'].value()
             email = form['email'].value()
             password = form['pass1'].value()
+            profile_photo = form.cleaned_data.get("profile_photo")
 
             if User.objects.filter(username=name).exists():
                 messages.error(request, 'Username already in use')
@@ -108,7 +109,10 @@ def register(request):
                 password=password
             )
 
+            user_profile = Profile(user=user, profile_photo=profile_photo)
+            user_profile.save()
             user.save()
+            
             messages.success(request, 'User created succesfully')
             return redirect('login')
         
