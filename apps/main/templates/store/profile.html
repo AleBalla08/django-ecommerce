@@ -1,0 +1,53 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1>Perfil do Usuário</h1>
+
+{% if userProfile  %}
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    {% if userProfile.profile_photo %}
+        <img style="width: 250px; height: 250px;" src="{{ userProfile.profile_photo.url }}" alt="foto de {{userProfile.user.name}}">
+    {% else %}
+        <img style="width: 250px; height: 250px;" src="{% static 'assets/img/defaultUser.jpg' %}" alt="foto de {{userProfile.user.name}}">
+    {% endif %}
+    <br>
+    <p><strong>Nome:</strong> {{ userProfile.user.username }}</p>
+    <p><strong>Email:</strong> {{ userProfile.user.email }}</p>
+    <p><strong>Joined at:</strong> {{ userProfile.user.date_joined }}</p>
+</div>
+{% else %}
+    <p>Perfil não encontrado.</p>
+{% endif %}
+
+<h2>Pedidos do Usuário</h2>
+{% if userOrders %}
+    {% for order in userOrders %}
+        <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;">
+            <p><strong>Order ID:</strong> {{ order.id }}</p>
+            <p><strong>Data:</strong> {{ order.created_at }}</p>
+            <p><strong>Delivery:</strong> {{ order.delivery_method }}</p>
+            <p><strong>Payment:</strong> {{ order.payment_method }}</p>
+            
+            <h3>Itens do Pedido:</h3>
+            {% with orderItems|dictsort:"order.id" as filtered_items %}
+                {% if filtered_items %}
+                    <ul>
+                        {% for item in filtered_items %}
+                            {% if item.order.id == order.id %}
+                                <li>{{ item.product.name }} - Quantidade: {{ item.quantity }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Este pedido não tem itens.</p>
+                {% endif %}
+            {% endwith %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Nenhum pedido encontrado.</p>
+{% endif %}
+
+
+{% endblock %}

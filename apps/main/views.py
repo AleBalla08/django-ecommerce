@@ -5,6 +5,7 @@ from .forms import *
 from django.contrib import auth
 from django.contrib.auth.models import User
 from .models import Product, Profile
+from apps.cart.models import *
 
 def custom_login_required(view_func):
     def wrapper(request, *arg, **kwargs):
@@ -122,6 +123,22 @@ def logoutView(request):
     auth.logout(request)
     messages.success(request, 'User Logouted succesfully')
     return redirect('login')
+
+
+def profileView(request):
+    user = request.user
+    userProfile = Profile.objects.filter(user=user).first()
+    userOrders = Order.objects.filter(user=user) 
+    orderItems = OrderItem.objects.filter(order__in=userOrders)  
+
+    print('user',userProfile, 'order', userOrders, 'items', orderItems) 
+    context = {
+        'userProfile': userProfile,
+        'userOrders': userOrders,
+        'orderItems': orderItems
+    }
+
+    return render(request, 'store/profile.html', context)
 
 
 
