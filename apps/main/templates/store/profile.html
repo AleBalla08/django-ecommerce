@@ -12,42 +12,100 @@
         <img style="width: 250px; height: 250px;" src="{% static 'assets/img/defaultUser.jpg' %}" alt="foto de {{userProfile.user.name}}">
     {% endif %}
     <br>
-    <p><strong>Nome:</strong> {{ userProfile.user.username }}</p>
-    <p><strong>Email:</strong> {{ userProfile.user.email }}</p>
-    <p><strong>Joined at:</strong> {{ userProfile.user.date_joined }}</p>
+    <h2 class="h2">Hello, {{userProfile.user.username}}!</h2>
 </div>
 {% else %}
     <p>Perfil não encontrado.</p>
 {% endif %}
 
-<h2>Pedidos do Usuário</h2>
-{% if userOrders %}
-    {% for order in userOrders %}
-        <div style="border: 1px solid #ddd; padding: 10px; margin-bottom: 10px;">
-            <p><strong>Order ID:</strong> {{ order.id }}</p>
-            <p><strong>Data:</strong> {{ order.created_at }}</p>
-            <p><strong>Delivery:</strong> {{ order.delivery_method }}</p>
-            <p><strong>Payment:</strong> {{ order.payment_method }}</p>
-            
-            <h3>Itens do Pedido:</h3>
-            {% with orderItems|dictsort:"order.id" as filtered_items %}
-                {% if filtered_items %}
-                    <ul>
-                        {% for item in filtered_items %}
-                            {% if item.order.id == order.id %}
-                                <li>{{ item.product.name }} - Quantidade: {{ item.quantity }}</li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Este pedido não tem itens.</p>
-                {% endif %}
-            {% endwith %}
-        </div>
-    {% endfor %}
-{% else %}
-    <p>Nenhum pedido encontrado.</p>
-{% endif %}
 
+<div style="display: flex; flex-direction: row; width: 100%; margin-top: 30px; ">
+
+    <div style="display: flex; flex-direction: column; width: 50%;">
+        <h2 style="margin-left: 10px;">User Orders:</h2>
+    {% if userOrders %}
+        {% for order in userOrders %}
+            <div style="border: 1px solid #ddd; padding: 10px; margin: 0 10px 10px 10px">
+                    <p><strong>Order ID:</strong> {{ order.id }}</p>
+                    <p><strong>Data:</strong> {{ order.created_at }}</p>
+                    <p><strong>Delivery:</strong> {{ order.delivery_method }}</p>
+                    <p><strong>Payment:</strong> {{ order.payment_method }}</p>
+                    
+                    <h3>Order Items:</h3>
+                    {% with orderItems|dictsort:"order.id" as filtered_items %}
+                        {% if filtered_items %}
+                            <ul>
+                                {% for item in filtered_items %}
+                                    {% if item.order.id == order.id %}
+                                        <li>{{ item.product.name }} - Quantidade: {{ item.quantity }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>This order have no Items.</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            
+        {% endfor %}
+    {% else %}
+        <p>No orders Found.</p>
+    {% endif %}
+
+    </div>
+
+    <div style="display: flex; flex-direction: column; width: 48%;">
+        <h2 style="margin-left: 20px;">User Info:</h2>
+        <div style="margin-left: 20px; border: 1px solid #ddd; padding: 10px;">
+            <p><strong>Username:</strong> {{userProfile.user.username}}</p>
+            <p><strong>Email:</strong> {{userProfile.user.email}}</p>
+        </div>
+        <div style="margin-left: 20px; margin-top: 20px;">
+            <h2>Edit Profile:</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form.as_p}}
+                
+                <button type="submit" class="btn btn-primary" style="background-color: #591420; border-color: #591420;">Update</button>
+                <button class="btn btn-secondary" id="change-pass-btn">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Change Password
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+{% include 'store/modal_password.html' %}
 
 {% endblock %}
+
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+    const btnPass = document.getElementById('change-pass-btn');
+    const modalPass = new bootstrap.Modal(document.getElementById('modal-password'));
+    const formPass = document.getElementById('password-form'); // Seu formulário no modal
+
+    if (btnPass) {
+        btnPass.addEventListener('click', function(event) {
+            event.preventDefault(); // Previne o envio do formulário
+            modalPass.show(); // Exibe o modal
+        });
+    }
+
+    if (formPass) {
+        formPass.addEventListener('submit', function(event) {
+            // Aqui você pode adicionar lógica para enviar o formulário
+            event.preventDefault(); // Para evitar o comportamento de recarregar a página
+            // Adicione o código para enviar o formulário, ou apenas valide os campos
+            alert('Formulário de senha enviado!');
+        });
+    }
+});
+
+
+    </script>
+{% endblock js %}

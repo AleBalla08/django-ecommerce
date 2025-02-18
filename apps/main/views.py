@@ -6,6 +6,7 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from .models import Product, Profile
 from apps.cart.models import *
+from django.contrib.auth import update_session_auth_hash
 
 def custom_login_required(view_func):
     def wrapper(request, *arg, **kwargs):
@@ -26,7 +27,7 @@ def store(request):
 
 
 
-
+@custom_login_required
 def newProduct(request):
     if not request.user.is_authenticated:
         messages.error(request, 'User not authenticated, Log-in first')
@@ -118,27 +119,57 @@ def register(request):
             return redirect('login')
         
     return render(request, 'store/register.html', {'form':form})
-    
+
+@custom_login_required  
 def logoutView(request):
     auth.logout(request)
     messages.success(request, 'User Logouted succesfully')
     return redirect('login')
 
-
+@custom_login_required
 def profileView(request):
     user = request.user
     userProfile = Profile.objects.filter(user=user).first()
     userOrders = Order.objects.filter(user=user) 
     orderItems = OrderItem.objects.filter(order__in=userOrders)  
 
-    print('user',userProfile, 'order', userOrders, 'items', orderItems) 
+    form = UpdateProfile(instance=userProfile, initial={'register_name':user.username, 'user_email':user.email})
+
+    if request.method == 'POST':
+        form = UpdateProfile(request.POST, request.FILES, instance=userProfile)
+
+        if form.is_valid():
+            user.username = form.cleaned_data['register_name']
+            user.save()
+            form.save()
+
+            messages.success(request, 'Profile updated succesfully')
+            return redirect('profile')
+
     context = {
         'userProfile': userProfile,
         'userOrders': userOrders,
-        'orderItems': orderItems
+        'orderItems': orderItems,
+        'form':form
     }
 
     return render(request, 'store/profile.html', context)
+
+@custom_login_required
+def changePasswordView(request):
+    if request.method == 'POST':
+        form = UpdatePassword(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = forms.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Password updated')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Erro')
+    else:
+        form = UpdatePassword(user = request.user)
+    
+    return render(request, 'store/modal_password.html', {'form':form})
 
 
 

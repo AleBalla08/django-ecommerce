@@ -1,5 +1,6 @@
 from django import forms
-from .models import Product
+from .models import Product, Profile, User
+from django.contrib.auth.forms import PasswordChangeForm
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -78,3 +79,50 @@ class RegisterForm(forms.Form):
                 return name
             else:
                 raise forms.ValidationError('Not possible to put spaces in this field')
+            
+class UpdateProfile(forms.ModelForm):
+    email = forms.EmailField(required=True, max_length=50, widget=forms.TextInput(
+        attrs={'class':'form-control', 'readonly':'readonly'}
+    ))
+
+    register_name = forms.CharField(label='Name', required=True, max_length=20, widget=forms.TextInput(
+        attrs={
+            "class":"form-control",
+        }
+    ))
+
+    profile_photo = forms.ImageField(required=False)
+
+    class Meta:
+        model = Profile
+        fields = ['profile_photo']
+
+    def clean_register_name(self):
+        name = self.cleaned_data.get("register_name").strip()
+        if " " in name:
+            raise forms.ValidationError("Not possible to put spaces in this field")
+        return name
+    
+
+    
+class UpdatePassword(PasswordChangeForm):
+    old_password= forms.CharField(
+        label="Current Password", required=True,
+        widget=forms.PasswordInput(attrs={"class":"form-control", "placeholder":"Type your current password"})
+    )
+
+    new_password1 = forms.CharField(
+        label="New Password", required=True,
+        widget=forms.PasswordInput(attrs={'class':'form-control', 'placeholder':'Type your new Password'})
+    )
+
+    new_password2 = forms.CharField(
+        label="Confirm your password", required=True,
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder':'Confirm the new password'})
+    )
+
+    class Meta:
+        model = User
+        fields = ['old_password', 'new_password1', 'new_password2']
+
+
