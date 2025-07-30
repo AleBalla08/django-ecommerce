@@ -17,7 +17,7 @@
         <div>
             <ul id="navbar">
                 <li><a id="close" href="#"><i class="fa-solid fa-xmark"></i></a></li>
-                <li><a href="#">Home</a></li>
+                <li><a href="/">Home</a></li>
                 {% if request.user.is_authenticated and request.user.is_superuser %}
                     <li><a href="{% url 'new-product' %}">New product</a></li>
                 {% endif %}

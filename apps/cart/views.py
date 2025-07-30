@@ -81,7 +81,7 @@ def checkout(request):
         addressExists = UserAddress.objects.filter(
             user = request.user,
             address = address.address,
-            neighborhood = address.neighnorhood,
+            neighborhood = address.neighborhood,
             city = address.city,
             state = address.state,
             country = address.country
@@ -92,13 +92,14 @@ def checkout(request):
             address.save()
         else:
             address = UserAddress.objects.filter(
-                user = request.user,
-                address = address.address,
-                neighborhood = address.neighnorhood,
-                city = address.city,
-                state = address.state,
-                country = address.country
-            )
+                user=request.user,
+                address=address.address,
+                neighborhood=address.neighborhood,
+                city=address.city,
+                state=address.state,
+                country=address.country
+            ).first()
+
 
         delivery_method=request.POST.get("selected_delivery")
         payment_method=request.POST.get("selected_payment")

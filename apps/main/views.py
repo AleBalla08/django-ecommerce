@@ -99,7 +99,7 @@ def register(request):
             name = form['register_name'].value()
             email = form['email'].value()
             password = form['pass1'].value()
-            profile_photo = form.cleaned_data.get("profile_photo")
+            profile_photo = form['profile_photo'].value()
 
             if User.objects.filter(username=name).exists():
                 messages.error(request, 'Username already in use')

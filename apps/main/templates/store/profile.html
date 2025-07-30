@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<h1>Perfil do Usuário</h1>
+<h1 style="padding: 1em;">User Profile</h1>
 
 {% if userProfile  %}
 <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -21,7 +21,7 @@
 
 <div style="display: flex; flex-direction: row; width: 100%; margin-top: 30px; ">
 
-    <div style="display: flex; flex-direction: column; width: 50%;">
+    <div style="display: flex; flex-direction: column; width: 50%; padding: 1em;">
         <h2 style="margin-left: 10px;">User Orders:</h2>
     {% if userOrders %}
         {% for order in userOrders %}
@@ -37,7 +37,7 @@
                             <ul>
                                 {% for item in filtered_items %}
                                     {% if item.order.id == order.id %}
-                                        <li>{{ item.product.name }} - Quantidade: {{ item.quantity }}</li>
+                                        <li>{{ item.product.name }} - Quantity: {{ item.quantity }}</li>
                                     {% endif %}
                                 {% endfor %}
                             </ul>
